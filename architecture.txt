@@ -1,0 +1,53 @@
+1. The Trigger (Far Left)
+
+Shape: Cloud or basic rectangle.
+
+Text: GitLab Webhook (CE v17.8)
+
+Subtext: Triggers on new issue or ai-assist label.
+
+Arrow: Pointing right towards the center.
+
+2. The Orchestrator (Center)
+
+Shape: Large main rectangle (this represents your Python application).
+
+Text: Agent Orchestrator (Python / FastAPI)
+
+Inside this large rectangle, place three smaller boxes:
+
+Context Retrieval (Pulls repository data via GitLab API).
+
+Memory Buffer (Stores issue context temporarily).
+
+Logic Router (Diamond shape - asks: "Is Context Sufficient?").
+
+3. The Intelligence (Top, connected to Center)
+
+Shape: Hexagon or distinct server shape.
+
+Text: LiteLLM Proxy -> Approved Pre-trained LLM
+
+Arrow: Two-way arrow pointing between this box and the "Agent Orchestrator."
+
+4. The Actions / Outcomes (Right Side)
+
+From the "Logic Router" diamond in the center, draw two arrows pointing right.
+
+Path 1 (Top Arrow - labeled "No"):
+
+Shape: Rectangle.
+
+Text: Request Clarification
+
+Subtext: Posts comment on GitLab issue asking for more details.
+
+Path 2 (Bottom Arrow - labeled "Yes"):
+
+Shape: Three stacked rectangles (representing a sequence).
+
+Box 1: Create Branch
+
+Box 2: Atomic Commit (pushes code + tests).
+
+Box 3: Open Merge Request
