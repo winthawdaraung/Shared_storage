@@ -1,3 +1,4 @@
+%%{init: {"themeVariables": { "fontSize": "20px", "fontFamily": "Arial", "spacing": 50, "nodeSpacing": 90, "rankSpacing": 130, "clusterBkg": "#f9f9f9", "clusterBorder": "#cccccc", "clusterPadding": 40, "clusterFontWeight": "700" }}}%%
 graph LR
     %% Styling Definitions
     classDef user fill:#6c757d,stroke:#495057,stroke-width:2px,color:white;
@@ -7,19 +8,19 @@ graph LR
 
     User((Developer)):::user
 
-    subgraph GitLab Environment [GitLab CE v17.8]
+    subgraph GitLab Environment ["*GitLab CE v17.8*"]
         Issues[Issues]:::gitlab
         Repo[Repository .md / .py files]:::gitlab
         MR[Merge Requests]:::gitlab
     end
 
-    subgraph AI Agent Application [Your Python Server]
+    subgraph AI Agent Application ["*Python Server*"]
         FastAPI[FastAPI Webhook Listener]:::agent
         Core[Agent Core Logic]:::agent
         LiteLLM[LiteLLM SDK]:::agent
     end
 
-    subgraph Enterprise AI Network [TDET Azure Proxy]
+    subgraph Enterprise AI Network ["*TDET Azure Proxy*"]
         Proxy[AI Foundry Proxy \n http://10.74.6.101:4000]:::azure
         GPTMain((gpt-main)):::azure
         GPTChat((gpt-chat)):::azure
