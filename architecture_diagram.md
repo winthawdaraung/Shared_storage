@@ -1,0 +1,39 @@
+graph LR
+    %% Styling Definitions
+    classDef user fill:#6c757d,stroke:#495057,stroke-width:2px,color:white;
+    classDef gitlab fill:#fca121,stroke:#e24329,stroke-width:2px,color:white;
+    classDef agent fill:#4caf50,stroke:#388e3c,stroke-width:2px,color:white;
+    classDef azure fill:#0078d4,stroke:#005a9e,stroke-width:2px,color:white;
+
+    User((Developer)):::user
+
+    subgraph GitLab Environment [GitLab CE v17.8]
+        Issues[Issues]:::gitlab
+        Repo[Repository .md / .py files]:::gitlab
+        MR[Merge Requests]:::gitlab
+    end
+
+    subgraph AI Agent Application [Your Python Server]
+        FastAPI[FastAPI Webhook Listener]:::agent
+        Core[Agent Core Logic]:::agent
+        LiteLLM[LiteLLM SDK]:::agent
+    end
+
+    subgraph Enterprise AI Network [TDET Azure Proxy]
+        Proxy[AI Foundry Proxy \n http://10.74.6.101:4000]:::azure
+        GPTMain((gpt-main)):::azure
+        GPTChat((gpt-chat)):::azure
+    end
+
+    %% Workflow Connections
+    User -- "1. Assigns Issue" --> Issues
+    Issues -- "2. Webhook (JSON)" --> FastAPI
+    FastAPI -- "3. Extracts Issue Text" --> Core
+    Core -- "4. Fetch Context via REST" --> Repo
+    Core -- "5. Sends Prompt" --> LiteLLM
+    LiteLLM -- "6. API Request" --> Proxy
+    Proxy -- "7. Routes Request" --> GPTMain
+    Proxy -. "Testing/Simple tasks" .-> GPTChat
+    GPTMain -- "8. Returns Decision" --> Core
+    Core -- "9. Post Comment/Create Branch" --> MR
+    Core -- "9. Update Label" --> Issues
