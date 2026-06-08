@@ -1,53 +1,56 @@
-1. The Trigger (Far Left)
+The Architecture Diagram Blueprint
+Create three main columns or sections on your canvas:
 
-Shape: Cloud or basic rectangle.
+Section 1: The Environment (Left Side)
+Box 1: Developer (User)
 
-Text: GitLab Webhook (CE v17.8)
+Icon: A person or laptop.
 
-Subtext: Triggers on new issue or ai-assist label.
+Box 2: GitLab CE v17.8
 
-Arrow: Pointing right towards the center.
+Icon: GitLab logo.
 
-2. The Orchestrator (Center)
+Sub-components to list inside: Issues, Repositories (.md / .py files), Merge Requests.
 
-Shape: Large main rectangle (this represents your Python application).
+Section 2: The AI Agent Backend (Middle)
+Box 3: FastAPI Service (The Listener)
 
-Text: Agent Orchestrator (Python / FastAPI)
+Role: Receives incoming webhooks and extracts the JSON data.
 
-Inside this large rectangle, place three smaller boxes:
+Box 4: AI Agent Core Logic (Python)
 
-Context Retrieval (Pulls repository data via GitLab API).
+Role: The main script that manages the workflow (checking context, looping, testing).
 
-Memory Buffer (Stores issue context temporarily).
+Box 5: LiteLLM SDK
 
-Logic Router (Diamond shape - asks: "Is Context Sufficient?").
+Role: The universal translator standardizing your AI prompts.
 
-3. The Intelligence (Top, connected to Center)
+Section 3: The Enterprise AI Network (Right Side)
+Box 6: TDET Proxy Server (Azure AI Foundry)
 
-Shape: Hexagon or distinct server shape.
+Role: Secure corporate gateway at http://10.74.6.101:4000/. Handles billing, security, and rate limits.
 
-Text: LiteLLM Proxy -> Approved Pre-trained LLM
+Box 7: Enterprise Models
 
-Arrow: Two-way arrow pointing between this box and the "Agent Orchestrator."
+Sub-components to list inside: gpt-main (for complex coding/reasoning) and gpt-chat (for simple tasks).
 
-4. The Actions / Outcomes (Right Side)
+How to draw the Arrows (The Data Flow)
+Once your boxes are on the screen, connect them with arrows to show how data moves:
 
-From the "Logic Router" diamond in the center, draw two arrows pointing right.
+Developer -> GitLab: Draw an arrow labeled "Assigns Issue".
 
-Path 1 (Top Arrow - labeled "No"):
+GitLab -> FastAPI: Draw an arrow labeled "Fires Webhook (JSON)".
 
-Shape: Rectangle.
+FastAPI -> Agent Core: Draw an arrow labeled "Extracts Issue Text".
 
-Text: Request Clarification
+Agent Core -> GitLab: Draw a two-way arrow labeled "REST API: Fetch .md context / files".
 
-Subtext: Posts comment on GitLab issue asking for more details.
+Agent Core -> LiteLLM: Draw an arrow labeled "Sends Context + Prompt".
 
-Path 2 (Bottom Arrow - labeled "Yes"):
+LiteLLM -> TDET Proxy Server: Draw an arrow labeled "Routes standard API call".
 
-Shape: Three stacked rectangles (representing a sequence).
+TDET Proxy Server -> Enterprise Models: Draw an arrow labeled "Executes 'gpt-main' locally".
 
-Box 1: Create Branch
+Enterprise Models -> Agent Core: Draw an arrow pointing all the way back labeled "Returns Decision (PROCEED or CLARIFY)".
 
-Box 2: Atomic Commit (pushes code + tests).
-
-Box 3: Open Merge Request
+Agent Core -> GitLab: Draw a final arrow pointing back to GitLab labeled "REST API: Post Comment or Create Branch".
