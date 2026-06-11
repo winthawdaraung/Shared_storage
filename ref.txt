@@ -1,0 +1,68 @@
+Developer triggers a Merge Request.
+
+GitLab CI/CD Pipeline starts automatically.
+
+The Pipeline calls your Agent (running as a container).
+
+Your Agent reads the config.yml in the local folder.
+
+Your Agent executes the logic based on the user's settings.
+
+
+1. The Old Way (What you have now)
+Trigger: GitLab sends a Webhook to your computer.
+
+Execution: Your Python script (FastAPI) receives the webhook and runs the AI task.
+
+Problem: It's hard to manage, not secure, and if your laptop goes to sleep, the agent is dead.
+
+2. The Professional Way (What P'Benz wants)
+You move the execution into the GitLab Runner, but you keep the trigger as a comment/assignment.
+
+How it works:
+The Trigger: A developer assigns an issue to the agent.
+
+The Hook: GitLab Webhook sends a notification.
+
+The Pipeline: Instead of your code doing the work, your server (or GitLab) triggers a Pipeline via the GitLab API Trigger.
+
+The Runner: The Runner on your PC sees this pipeline and executes your agent's code inside a clean environment (a container).
+
+Why this is better:
+Stability: If the job fails, GitLab retries it. If the Runner is busy, it queues the job. Your script doesn't just crash.
+
+Standardization: Everything stays inside GitLab. You don't have to worry about managing your own "always-on" server environment—GitLab handles the infrastructure.
+
+Scalability: When you want to add more tasks (like checking code quality, security scanning, or generating docs), you just add new "Jobs" to that same pipeline.
+
+Your Pivot
+You do not need to change the logic of why the agent starts (it still starts when it sees a comment or assignment). You are changing how it starts.
+
+Instead of your script "listening" and "executing," your script should "listen" and then "trigger a pipeline job."
+
+Step A: Keep your FastAPI listener to catch the Webhook (Comment/Assign).
+
+Step B: Inside the FastAPI route, write code that calls the GitLab API to trigger a pipeline (POST /projects/:id/pipeline).
+
+Step C: Your .gitlab-ci.yml defines the job that the agent actually performs.
+
+
+
+Current Flow: Webhook -> FastAPI (on laptop) -> Runs logic.
+
+New Flow: Webhook -> FastAPI (Running as a service on a server) -> Triggers CI/CD Pipeline API -> GitLab Runner picks up the job -> Runs your Agent container.
+
+
+
+Your Step-by-Step "To-Do" List:
+Draft a Dockerfile: This will package your main.py and its dependencies. This is the most important "General" step you can take.
+
+Learn python-gitlab API: Instead of your script doing the work itself, your script's job is now to call the GitLab API to trigger a job in the project that sent the webhook.
+
+Update your main.py: Change it to be an "Orchestrator."
+
+Old main.py: Listens for webhook -> Calls LiteLLM -> Does the work.
+
+New main.py: Listens for webhook -> Calls GitLab API to trigger a pipeline.
+
+Configure the CI/CD Job: Create the .gitlab-ci.yml that performs the actual heavy lifting (LiteLLM, code generation, etc.).

@@ -1,0 +1,11 @@
+# .gitlab-ci.yml
+stages:
+  - run_agent
+
+agent_task:
+  stage: run_agent
+  image: your-gitlab-registry-url/your-agent:latest
+  script:
+    - python main.py --issue-id $CI_COMMIT_MESSAGE # Or other env variables
+  only:
+    - web # This lets you manually trigger it from the UI or via API

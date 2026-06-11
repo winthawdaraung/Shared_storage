@@ -1,0 +1,68 @@
+API Interaction Plan with GitLab
+1. Agent Trigger (Inbound to FastAPI)
+This is how GitLab wakes up the AI Agent when a developer interacts with it.
+
+Action: Developer assigns an issue to the AI Agent OR replies to a clarification comment.
+
+GitLab Mechanism: System Webhook (Issue events and Note events).
+
+Agent Endpoint: POST /gitlab-webhook (FastAPI Server)
+
+Payload Processed: Extracts project_id, issue_iid, description, and assignee_id.
+
+2. Context Gathering Phase (Outbound to GitLab)
+Once awake, the agent uses these endpoints to pull the necessary context to understand the assignment.
+
+Fetch Full Issue Details:
+
+Endpoint: GET /api/v4/projects/:id/issues/:issue_iid
+
+Purpose: To retrieve the full bug report, current labels, and existing comments.
+
+Fetch Repository Tree (File List):
+
+Endpoint: GET /api/v4/projects/:id/repository/tree
+
+Purpose: To map out the repository structure and locate relevant .md guidelines or source code files.
+
+Fetch Specific File Content:
+
+Endpoint: GET /api/v4/projects/:id/repository/files/:file_path/raw
+
+Purpose: To read the specific markdown (.md) files or Python/code files for context checking.
+
+3. Clarification Loop (Outbound to GitLab)
+If the agent's LiteLLM logic determines the context is insufficient (Step 4.1 in workflow).
+
+Ask Clarifying Question:
+
+Endpoint: POST /api/v4/projects/:id/issues/:issue_iid/notes
+
+Purpose: The agent posts a comment on the GitLab issue asking the developer for missing information (e.g., "Could you specify which file contains the login module?").
+
+4. Execution & Delivery Phase (Outbound to GitLab)
+If the context is sufficient, the agent proceeds to implementation (Steps 5 & 6 in workflow).
+
+Set Issue Label:
+
+Endpoint: PUT /api/v4/projects/:id/issues/:issue_iid
+
+Purpose: To automatically categorize the task by adding bug, feature, or hotfix to the labels array.
+
+Create New Branch:
+
+Endpoint: POST /api/v4/projects/:id/repository/branches
+
+Purpose: To create a dedicated working branch using TDET's strict naming rules (e.g., feature/issue-42-login-fix).
+
+Commit Generated Code:
+
+Endpoint: POST /api/v4/projects/:id/repository/commits
+
+Purpose: To push the AI-generated implementation and test files to the newly created branch in a single commit.
+
+Create Merge Request:
+
+Endpoint: POST /api/v4/projects/:id/merge_requests
+
+Purpose: To open the final MR for human review, including the self-review notes in the MR description, and linking it back to the original issue.
