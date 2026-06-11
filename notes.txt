@@ -1,0 +1,22 @@
+You have successfully laid out a professional plan for your internship! To keep everything organized for your mentors, here is the comprehensive proposal document containing all five task division strategies in a unified format.
+Proposal: AI Agent Project Task Division Strategies
+Having two interns on the TDET AI Agent project provides a significant advantage. To ensure smooth collaboration and maximize learning, we have outlined five potential strategies for dividing the project tasks. We would like to present these options to the mentorship team to decide the best path forward.
+Option 1: The "Component" Split (Infrastructure vs. AI Logic)
+This strategy divides the workload by technical domain, preventing merge conflicts by giving each intern ownership over a specific piece of the tech stack.
+ Intern A (Ears and Hands): FastAPI webhook listener, GitLab API integration, branch/MR management.
+ Intern B (The Brain): LiteLLM integration, decision logic, prompt engineering, self-review logic.
+Option 2: The "Pipeline" Split (Front-Half vs. Back-Half)
+This strategy divides the workload by the project's chronological workflow. This provides "full-stack" experience, as both interns work with both the GitLab API and LiteLLM.
+ Intern A (Intake & Clarification): Webhook handling, context collection, context check, developer clarification loop.
+ Intern B (Execution & Delivery): Issue labeling, code generation, test execution, self-review, MR creation.
+ Note: Requires a "Mock Data" contract to work in parallel.
+Option 3: The "MVP vs. Extensions" Split (Core vs. Advanced)
+One intern builds the foundational End-to-End agent, while the other builds the advanced architecture requested by mentors.
+ Intern A (Core MVP Builder): Builds the base pipeline (FastAPI/LiteLLM/GitLab).
+ Intern B (Advanced Systems Architect): Builds RAG (ChromaDB), Docker Sandboxing, and LangGraph.
+Option 4: Agile Pair Programming
+Both interns work on the exact same codebase simultaneously using VS Code Live Share.
+ Process: Interns alternate between "Driver" (typing code) and "Navigator" (reviewing architecture, logic, and debugging).
+ Benefit: 100% full-stack experience for both, high code quality, and deep team collaboration.
+Option 5: Capability-Based Split (Understanding vs. Acting) — Recommended
+This split focuses on the two most difficult problems in agent systems: Understanding the repository well enough to plan, and Acting accurately to implement and validate code. This is the recommended approach for tackling complex enterprise agentic systems.
